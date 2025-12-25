@@ -40,5 +40,11 @@ jobs:
       - name: Run unit tests
         run: npm run test -- --watch=false --browsers=ChromeHeadless
 
-      - name: Build Angular app (Prod)
-        run: npm run build -- --configuration=production
+        - name: Build Angular app (DEV)
+        run: npm run build
+
+      - name: Deploy to GitHub Pages (DEV)
+        run: npx angular-cli-ghpages --dir=dist/browser
+
+      # - name: Build Angular app (Prod)
+      #   run: npm run build -- --configuration=production
