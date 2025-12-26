@@ -2,21 +2,17 @@ name: Angular CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master" ]   # CD only after merge
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master" ]   # CI only
 
 permissions:
-  contents: write   # REQUIRED for GitHub Pages deploy
+  contents: write   # required for gh-pages push
 
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-
-    strategy:
-      matrix:
-        node-version: [18]   # LTS
 
     steps:
       - name: Checkout code
@@ -25,23 +21,25 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          node-version: 18
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Chrome (for Angular tests)
+      - name: Install Chrome
         run: sudo apt-get install -y google-chrome-stable
 
       - name: Run unit tests
-        run: npm run test -- --watch=false --browsers=ChromeHeadless
+        run: npm test -- --watch=false --browsers=ChromeHeadless
 
-      - name: Build Angular app (DEV)
-        run: npm run build
+      - name: Build Angular app (Production)
+        run: npm run build -- --configuration production --base-href /ci-cd-ga/
 
-      - name: Deploy to GitHub Pages (DEV)
+      # 🚀 CD — ONLY after merge to master
+      - name: Deploy to GitHub Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx angular-cli-ghpages --dir=dist/ci-cd-ga/browser --repo=https://github.com/imsanjib44/ci-cd-ga.git
+        run: |
+          npx angular-cli-ghpages \
+          --dir=dist/ci-cd-ga/browser \
+          --no-silent
