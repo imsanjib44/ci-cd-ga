@@ -36,10 +36,14 @@ jobs:
       - name: Build Angular app (Production)
         run: npm run build -- --configuration production --base-href /ci-cd-ga/
 
-      # 🚀 CD — ONLY after merge to master
+      - name: Configure git identity
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+
       - name: Deploy to GitHub Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: |
           npx angular-cli-ghpages \
-          --dir=dist/ci-cd-ga/browser \
-          --no-silent
+            --dir=dist/ci-cd-ga/browser \
+            --no-silent
