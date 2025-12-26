@@ -41,4 +41,5 @@ jobs:
         run: npm run build
 
       - name: Deploy to GitHub Pages (DEV)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: npx angular-cli-ghpages --dir=dist/browser
