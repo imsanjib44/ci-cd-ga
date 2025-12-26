@@ -42,6 +42,4 @@ jobs:
 
       - name: Deploy to GitHub Pages (DEV)
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx angular-cli-ghpages --dir=dist/ci-cd-ga/browser --repo=https://github.com/imsanjib44/ci-cd-ga.git
+        run: npx angular-cli-ghpages --dir=dist/ci-cd-ga/browser
