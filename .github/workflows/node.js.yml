@@ -42,4 +42,4 @@ jobs:
 
       - name: Deploy to GitHub Pages (DEV)
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        run: npx angular-cli-ghpages --dir=dist/ci-cd-ga
+        run: npx angular-cli-ghpages --dir=dist/ci-cd-ga/browser
